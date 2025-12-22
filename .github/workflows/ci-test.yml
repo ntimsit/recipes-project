@@ -1,0 +1,57 @@
+name: Run Recipes API Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-recipes:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: mysecret
+          MYSQL_DATABASE: recipes_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=5s
+          --health-timeout=2s
+          --health-retries=10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install requests
+
+      - name: Wait for MySQL
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..20}; do
+            mysqladmin ping -h 127.0.0.1 -uroot -pmysecret && break
+            sleep 3
+          done
+      - name: Run API in background
+        run: |
+          cd server
+          python app.py &
+          sleep 10  # נותן ל-Flask זמן לעלות
+
+      - name: Run test
+        run: |
+          python ../test/recipes-test.py

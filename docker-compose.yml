@@ -1,0 +1,52 @@
+services:
+  flask-app-1:
+    build:
+      context: ./server
+    container_name: flask-app-1
+    environment:
+      - FLASK_INSTANCE=flask-app-1
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=mysecret
+      - DB_NAME=recipes_db
+    volumes:
+      - ./tests:/app/tests   # מוודא שהקובץ recipes-test.py נגיש בתוך הקונטיינר
+
+  flask-app-2:
+    build:
+      context: ./server
+    container_name: flask-app-2
+    environment:
+      - FLASK_INSTANCE=flask-app-2
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=mysecret
+      - DB_NAME=recipes_db
+    volumes:
+      - ./tests:/app/tests   # מוודא שהקובץ recipes-test.py נגיש בתוך הקונטיינר
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - flask-app-1
+      - flask-app-2
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecret
+      MYSQL_DATABASE: recipes_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
