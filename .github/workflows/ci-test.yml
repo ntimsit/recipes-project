@@ -66,4 +66,4 @@ jobs:
       - name: Push Docker Image
         run: |
            docker tag recipes_project-flask-app-1 ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
+           docker push ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
