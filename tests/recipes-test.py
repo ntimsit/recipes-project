@@ -1,7 +1,7 @@
 import requests
 import sys
 
-BASE_URL = "http://127.0.0.1:5000/recipes"
+BASE_URL = "http://localhost/recipes"
 
 def main():
     # נתוני מתכון לדוגמה
