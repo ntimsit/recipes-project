@@ -1,7 +1,7 @@
 import requests
 import sys
 
-BASE_URL = "http://nginx/recipes"
+BASE_URL = "http://127.0.0.1:5000"
 
 def main():
     # נתוני מתכון לדוגמה
