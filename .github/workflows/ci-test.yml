@@ -47,15 +47,15 @@ jobs:
             sleep 3
           done
 
-      - name: Run API in background
+      - name: Run Flask API in background
         run: |
           cd server
           python app.py &
-          sleep 10  # נותן ל-Flask זמן לעלות
+          sleep 10  # מחכה ל-Flask לעלות
 
-      - name: Run test
+      - name: Run API tests
         run: |
-          python BASE_URL=http://localhost:5000 python tests/recipes-test.py
+          BASE_URL=http://localhost:5000 python3 tests/recipes-test.py
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -65,5 +65,6 @@ jobs:
 
       - name: Push Docker Image
         run: |
-           docker tag recipes_project-flask-app-1 ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
-           docker push ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
+          docker tag recipes_project-flask-app-1 ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/recipes_project-flask-app-1:latest
+
