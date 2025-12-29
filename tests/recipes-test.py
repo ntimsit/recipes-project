@@ -1,10 +1,13 @@
 import requests
 import sys
+import os
 
-BASE_URL = "http://localhost/recipes"
+# BASE_URL כללי (לוקאלי: nginx, CI: Flask ישיר)
+BASE_URL = os.getenv("BASE_URL", "http://localhost")
+
+RECIPES_ENDPOINT = f"{BASE_URL}/recipes"
 
 def main():
-    # נתוני מתכון לדוגמה
     example_recipe = {
         "name": "Test Recipe",
         "ingredients": ["ingredient1", "ingredient2"],
@@ -12,25 +15,23 @@ def main():
     }
 
     try:
-        # שליחת POST כדי להוסיף את המתכון
-        res_post = requests.post(BASE_URL, json=example_recipe)
+        # POST – הוספת מתכון
+        res_post = requests.post(RECIPES_ENDPOINT, json=example_recipe)
         if res_post.status_code != 201:
             print(f"POST failed with status {res_post.status_code}")
             sys.exit(1)
 
-        # קבלת ה-ID של המתכון שנוצר
         recipe_id = res_post.json().get("id")
         if not recipe_id:
             print("No ID returned from POST")
             sys.exit(1)
 
-        # מחיקת המתכון שנוצר
-        res_delete = requests.delete(f"{BASE_URL}/{recipe_id}")
+        # DELETE – מחיקת המתכון
+        res_delete = requests.delete(f"{RECIPES_ENDPOINT}/{recipe_id}")
         if res_delete.status_code != 200:
             print(f"DELETE failed with status {res_delete.status_code}")
             sys.exit(1)
 
-        # הכל עבר בהצלחה
         print("Test passed")
         sys.exit(0)
 
@@ -40,3 +41,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
