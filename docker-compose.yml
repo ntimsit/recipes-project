@@ -1,7 +1,7 @@
 services:
   flask-app-1:
-    build:
-      context: ./server
+    # שינוי: במקום build, אנחנו מושכים את האימג' מהענן
+    image: ntimsit/recipes_flask:latest
     container_name: flask-app-1
     environment:
       - FLASK_INSTANCE=flask-app-1
@@ -15,8 +15,8 @@ services:
       - db
 
   flask-app-2:
-    build:
-      context: ./server
+    # שינוי: גם כאן מושכים את אותו אימג'
+    image: ntimsit/recipes_flask:latest
     container_name: flask-app-2
     environment:
       - FLASK_INSTANCE=flask-app-2
