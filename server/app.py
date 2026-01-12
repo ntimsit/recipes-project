@@ -30,6 +30,23 @@ def get_db_connection():
     raise Exception("DB connection failed")
 
 
+def init_db():
+    """יוצר את הטבלה recipes אם היא לא קיימת"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(f"""
+        CREATE TABLE IF NOT EXISTS recipes (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            ingredients TEXT,
+            instructions TEXT
+        )
+    """)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -50,7 +67,6 @@ def get_recipes():
     cursor.close()
     conn.close()
 
-    # המרה של שדה ingredients ממחרוזת לרשימה
     for r in recipes:
         r["ingredients"] = r["ingredients"].split(",") if r["ingredients"] else []
 
@@ -88,6 +104,7 @@ def delete_recipe(recipe_id):
     conn.close()
     return jsonify({"message": "Recipe deleted"}), 200
 
+
 @app.route("/recipes/<int:recipe_id>", methods=["PATCH"])
 def update_recipe(recipe_id):
     data = request.json
@@ -100,7 +117,6 @@ def update_recipe(recipe_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # בונים את השאילתה בצורה דינמית לפי מה שנשלח
     fields = []
     values = []
     if ingredients is not None:
@@ -121,5 +137,5 @@ def update_recipe(recipe_id):
 
 
 if __name__ == "__main__":
+    init_db()  # ודא שהטבלה קיימת לפני הפעלת השרת
     app.run(host="0.0.0.0", port=5000)
-
