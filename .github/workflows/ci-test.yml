@@ -91,6 +91,30 @@ jobs:
           # תיוג האימג' שנבנה בשלב הראשון עם שם המשתמש מ-Secrets
           docker tag recipes_flask:latest ${{ secrets.DOCKERHUB_USERNAME }}/recipes_flask:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/recipes_flask:latest
+      
+      - name: Deploy to EC2 via SSH
+        if: success()
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_NAME }}  
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # התחברות ל-Docker Hub במכונה הציבורית
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            
+            # משיכת האימג' העדכני
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/recipes_flask:latest
+            
+            # עצירה והסרה של קונטיינר קיים
+            docker stop recipes_container || true
+            docker rm recipes_container || true
+            
+            # הרצה מחדש
+            docker run -d --name recipes_container -p 5000:5000 ${{ secrets.DOCKERHUB_USERNAME }}/recipes_flask:latest
+            
+            # ניקוי אימג'ים ישנים
+            docker image prune -f
 
       - name: Show logs on failure
         if: failure()
