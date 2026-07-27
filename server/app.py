@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 
-# משתנים של בסיס הנתונים:
+# משתנים של בסיס הנתונים
 DB_HOST = os.getenv("DB_HOST", "db")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "mysecret")
