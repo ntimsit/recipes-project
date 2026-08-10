@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 
-# משתנים של בסיס הנתונים
+# משתנים של בסיס הנתונים:
 DB_HOST = os.getenv("DB_HOST", "db")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "mysecret")
@@ -139,3 +139,4 @@ def update_recipe(recipe_id):
 if __name__ == "__main__":
     init_db()  # ודא שהטבלה קיימת לפני הפעלת השרת
     app.run(host="0.0.0.0", port=5000)
+    #check
