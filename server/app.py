@@ -31,7 +31,7 @@ def get_db_connection():
 
 
 def init_db():
-    """יוצר את הטבלה recipes אם היא לא קיימת:"""
+    """יוצר את הטבלה recipes אם היא לא קיימת::"""
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(f"""
