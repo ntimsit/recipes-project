@@ -137,6 +137,6 @@ def update_recipe(recipe_id):
 
 
 if __name__ == "__main__":
-    init_db()  # ודא שהטבלה קיימת לפני הפעלת השרת
+    init_db()  # ודא שהטבלה קיימת לפני הפעלת השרת:
     app.run(host="0.0.0.0", port=5000)
     #check11
